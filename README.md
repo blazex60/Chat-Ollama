@@ -1,0 +1,1 @@
+# This directory contains the first term subjects for the Python class.
