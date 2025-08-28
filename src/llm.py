@@ -1,19 +1,35 @@
-# LM StudioはOpenAI互換のAPIを提供
+"""LM Studio OpenAI互換クライアント薄いラッパー"""
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from typing import Any, List, Dict
 from openai import OpenAI
 
-class lmstudio():
-    def generate_text(self, selected_model, text):
-        # LM StudioにホストされているAPIサーバーに接続
-        client = OpenAI(base_url="http://100.65.101.114:1234/v1")
+DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://host.docker.internal:1234/v1")
 
-        # Gemma 3 1B モデルでテキスト生成
-        response = client.chat.completions.create(
-            model=selected_model,  # モデルを指定
-            messages=[
-                {"role": "user", "content": text}
-            ],  # ユーザーからの入力メッセージ
+
+@dataclass
+class LMStudioClient:
+    base_url: str = DEFAULT_BASE_URL
+    api_key: str | None = None  # LM Studio では必須でないことが多い
+
+    def __post_init__(self) -> None:
+        # OpenAI 互換クライアントを初期化
+        self._client = OpenAI(
+            base_url=self.base_url,
+            api_key=self.api_key or os.getenv("OPENAI_API_KEY", "lmstudio-not-required"),
         )
-        return response.choices[0].message.content
 
-# 生成されたテキスト応答を表示
-#print(response.choices[0].message.content)
+    def generate_text(self, model: str, text: str) -> str:
+        resp = self._client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": text}],
+        )
+        return resp.choices[0].message.content
+
+
+# シングルトンインスタンス (app.py はこれを import)
+lmstudio = LMStudioClient()
+
+__all__ = ["lmstudio", "LMStudioClient"]
