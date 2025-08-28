@@ -22,13 +22,9 @@ if st.button('Submit'):
     # 本文用テキスト (think ブロックを除去したもの)
     cleaned = pattern.sub("", raw).strip()
 
-    # 回答表示
-    st.subheader("Answer")
-    st.write(cleaned if cleaned else "(空の応答)")
-
     # <think> ブロックを隠す (ユーザーが開ける)
     if think_blocks:
-        with st.expander("🔍 推論過程 (think) を表示 / 隠す", expanded=False):
+        with st.expander("推論過程を表示 / 隠す", expanded=False):
             for i, block in enumerate(think_blocks, start=1):
                 st.markdown(f"**Block {i}:**")
                 # 余計な前後空白を除去しコードブロック表示
@@ -36,6 +32,10 @@ if st.button('Submit'):
     else:
         # 推論ブロックがない場合もデバッグ用に開けるようにするかは任意。ここでは表示しない。
         pass
+
+    # 回答表示
+    st.subheader("Answer")
+    st.write(cleaned if cleaned else "(空の応答)")
 
     # 任意: 生レスポンスをさらに確認したい場合 (デバッグ)
     with st.expander("Raw response (debug)"):
