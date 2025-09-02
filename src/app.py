@@ -3,7 +3,7 @@ from llm import lmstudio as lm
 import re
 
 # Sidebarの選択肢を定義する
-options = ["openai/gpt-oss-20b", "qwen/qwen3-4b-thinking-2507"]
+options = lm.list_loaded_models()
 choice = st.sidebar.selectbox("Select an option", options)
 
 # Modelを変える
