@@ -9,6 +9,9 @@ class lmstudio:
         api_key = os.getenv("OPENAI_API_KEY", "lmstudio-placeholder-key")
         self._client = OpenAI(base_url=DEFAULT_BASE_URL, api_key=api_key)
 
+    def list_loaded_models(self) -> list[str]:
+        return [model.id for model in self._client.models.list()]
+
     def generate_text(self, model: str, text: str) -> str:
         last_err: Exception | None = None
         retries = int(os.getenv("LMSTUDIO_RETRIES", "3"))
