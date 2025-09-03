@@ -1,7 +1,7 @@
 from openai import OpenAI, APIConnectionError
 import os, time
 
-DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://<LMStudioのIPアドレス>:1234/v1")
+DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://localhost:1234/v1")
 
 class lmstudio:
     def __init__(self):
