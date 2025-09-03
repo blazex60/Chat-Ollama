@@ -9,6 +9,7 @@ WORKDIR /app
 
 # 依存関係のみ先にコピーしてキャッシュ活用
 COPY src/requirements.txt ./requirements.txt
+COPY images/ ./images/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # アプリ本体
