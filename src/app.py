@@ -1,6 +1,14 @@
 import streamlit as st
 from llm import lmstudio as lm
 import re
+"""
+st.set_page_config(
+    page_title="省エネとは無縁の世界", 
+    page_icon=image, 
+)
+"""
+st.title("省エネとは無縁の世界")
+st.icon("../images/icon.png")
 
 # Sidebarの選択肢を定義する
 options = lm.list_loaded_models()
