@@ -6,3 +6,7 @@ services:
     ports:
       - "8080:8501"
     command: streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - LMSTUDIO_BASE_URL=http://host.docker.internal:1234/v1

@@ -11,8 +11,16 @@ st.set_page_config(
 )
 
 # Sidebarの選択肢を定義する
-options = lm.list_loaded_models()
-choice = st.sidebar.selectbox("Select an option", options)
+try:
+    options = lm.list_loaded_models()
+    if not options:
+        st.sidebar.error("利用可能なモデルがありません。LM Studioでモデルをロードしてください。")
+        choice = None
+    else:
+        choice = st.sidebar.selectbox("Select an option", options)
+except Exception as e:
+    st.sidebar.error(f"モデル一覧の取得に失敗しました: {e}")
+    choice = None
 
 # Modelを変える
 lm.selected_model = choice
@@ -21,7 +29,11 @@ lm.selected_model = choice
 text_input = st.text_input('Input', 'Input some text here.')
 
 if st.button('Submit'):
-    raw = lm.generate_text(lm.selected_model, text_input)
+    # 選択されたモデルを使用してテキスト生成
+    if lm.selected_model:
+        raw = lm.generate_text(lm.selected_model, text_input)
+    else:
+        raw = "モデルが選択されていません。"
 
     # すべての <think> ブロックを抽出 (大小文字無視 / 非貪欲)
     pattern = re.compile(r"<think>([\s\S]*?)</think>", re.IGNORECASE)

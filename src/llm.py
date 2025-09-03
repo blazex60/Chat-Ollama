@@ -1,16 +1,24 @@
 from openai import OpenAI, APIConnectionError
 import os, time
 
-DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://localhost:1234/v1")
+DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://host.docker.internal:1234/v1")
 
 class lmstudio:
     def __init__(self):
         # OpenAI ライブラリは api_key が必須なのでダミー値を渡す (LM Studio 側で不要な場合でも)
         api_key = os.getenv("OPENAI_API_KEY", "lmstudio-placeholder-key")
         self._client = OpenAI(base_url=DEFAULT_BASE_URL, api_key=api_key)
+        self.selected_model = None  # 選択されたモデルを保存する属性
 
     def list_loaded_models(self) -> list[str]:
-        return [model.id for model in self._client.models.list()]
+        try:
+            return [model.id for model in self._client.models.list()]
+        except APIConnectionError as e:
+            print(f"[Warning] LM Studio への接続に失敗しました: {e}")
+            return []
+        except Exception as e:
+            print(f"[Warning] モデル一覧の取得に失敗しました: {e}")
+            return []
 
     def generate_text(self, model: str, text: str) -> str:
         last_err: Exception | None = None
