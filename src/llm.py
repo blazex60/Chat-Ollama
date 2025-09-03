@@ -1,13 +1,15 @@
 from openai import OpenAI, APIConnectionError
 import os, time
 
-DEFAULT_BASE_URL = os.getenv("LMSTUDIO_BASE_URL", "http://localhost:1234/v1")
+client = OpenAI(
+    base_url = 'http://ollama:11434/v1',
+    api_key='ollama', # required, but unused
+)
 
 class lmstudio:
     def __init__(self):
-        # OpenAI ライブラリは api_key が必須なのでダミー値を渡す (LM Studio 側で不要な場合でも)
-        api_key = os.getenv("OPENAI_API_KEY", "lmstudio-placeholder-key")
-        self._client = OpenAI(base_url=DEFAULT_BASE_URL, api_key=api_key)
+        # OpenAI ライブラリは api_key が必須なのでダミー値を渡す (ollama 側で不要な場合でも)
+        self._client = OpenAI(base_url=client.base_url, api_key=client.api_key)
 
     def list_loaded_models(self) -> list[str]:
         return [model.id for model in self._client.models.list()]
